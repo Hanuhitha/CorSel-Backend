@@ -1,7 +1,10 @@
 
-const firebase = require("firebase");
 
-const app = firebase.initializeApp({
+var firebase = require("firebase");
+
+
+
+firebase.initializeApp({
     apiKey: "AIzaSyCpXJcpFFQEHDNER6d8QcTTV6tWFTm5c5s",
     authDomain: "cosel-e414d.firebaseapp.com",
     databaseURL: "https://cosel-e414d-default-rtdb.firebaseio.com",
@@ -12,6 +15,12 @@ const app = firebase.initializeApp({
 })
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const User = db.collection("Users");
-module.exports = User;
+let db=firebase.database();
+
+database.ref('customPath').once('value')
+.then(function(snapshot) {
+    console.log( snapshot.val() )
+})
+
+
+module.exports = userRef;
