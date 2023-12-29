@@ -92,7 +92,8 @@ app.get('/searchByField', async (req, res) => {
   }
 });
 
-//  filter
+//  filter 
+// search and filter
 app.get("/filter", async (req, res) => {
   const { q } = req.query;
   const snapshot = await ref.once('value');
