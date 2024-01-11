@@ -1,8 +1,4 @@
-
-
 var firebase = require("firebase");
-
-
 
 firebase.initializeApp({
     apiKey: "AIzaSyCpXJcpFFQEHDNER6d8QcTTV6tWFTm5c5s",
