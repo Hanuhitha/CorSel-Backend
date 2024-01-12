@@ -6,6 +6,8 @@ const firebase = require('firebase/app');
 require('firebase/database');
 
 const admin = require('firebase-admin');
+//add your own serviceaccount path
+const serviceAccount = require('C:\\Users\\sujay\\Downloads\\cosel-e414d-firebase-adminsdk-yj2by-4358d4774d.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
