@@ -17,6 +17,7 @@ admin.initializeApp({
 const db = admin.database();
 const ref = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOOqH7s_M/RCHS_SY2122_2223');
 const extracurricularRef = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOOqH7s_M/StudentExtracurricular');
+const volunteerOpportunitiesRef = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOOqH7s_M/VolunteerHours');
 
 const app = express();
 app.use(express.json());
@@ -45,6 +46,26 @@ app.get('/extracurricular', async (req, res) => {
   }
 });
 
+// add this endpoint to handle extracurricular submissions
+app.post('/extracurricular', async (req, res) => {
+  try {
+    const extracurricularData = req.body; // assuming the extracurricular data is sent in the request body
+    const { activityName, ...restData } = extracurricularData;
+
+    // Use activityName as the key for extracurricular data
+    await extracurricularRef.child(activityName).set({
+      ...restData,
+      activityName: activityName, // Include activityName as a separate field
+    });
+
+    console.log('Extracurricular added successfully');
+    res.json({ message: 'Extracurricular added successfully' });
+  } catch (error) {
+    console.error('Error adding extracurricular:', error);
+    res.status(500).send('Error adding extracurricular');
+  }
+});
+
 //  display complete data
 app.get('/data', async (req, res) => {
   try {
@@ -55,6 +76,69 @@ app.get('/data', async (req, res) => {
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).send('Error fetching data');
+  }
+});
+
+// add this endpoint to handle extracurricular submissions
+app.post('/data', async (req, res) => {
+  try {
+    const classData = req.body; // assuming the extracurricular data is sent in the request body
+    const { courseInfo_courseName, ...restData } = classData;
+
+    // Use activityName as the key for extracurricular data
+    await ref.child(courseInfo_courseName).set({
+      ...restData,
+      courseInfo_courseName: courseInfo_courseName, // Include activityName as a separate field
+    });
+
+    console.log('Class added successfully');
+    res.json({ message: 'Class added successfully' });
+  } catch (error) {
+    console.error('Error adding class:', error);
+    res.status(500).send('Error adding class');
+  }
+});
+
+// display complete volunteer opportunities data
+app.get('/volunteeropportunities', async (req, res) => {
+  try {
+    console.log('Attempting to fetch volunteer opportunities data...');
+    const snapshot = await volunteerOpportunitiesRef.once('value');
+
+    console.log('Snapshot exists:', snapshot.exists());
+
+    if (!snapshot.exists()) {
+      console.error('Volunteer opportunities data not found.');
+      res.status(404).send('Volunteer opportunities data not found.');
+      return;
+    }
+
+    const data = snapshot.val();
+    console.log('Received data:', data);
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching volunteer opportunities data:', error);
+    res.status(500).send('Error fetching volunteer opportunities data');
+  }
+});
+
+// add this endpoint to handle volunteer opportunities submissions
+app.post('/volunteeropportunities', async (req, res) => {
+  try {
+    const volunteerOpportunityData = req.body; // assuming the volunteer opportunity data is sent in the request body
+    const { title, ...restData } = volunteerOpportunityData;
+
+    // Use title as the key for volunteer opportunity data
+    await volunteerOpportunitiesRef.child(title).set({
+      ...restData,
+      title: title, // Include title as a separate field
+    });
+
+    console.log('Volunteer opportunity added successfully');
+    res.json({ message: 'Volunteer opportunity added successfully' });
+  } catch (error) {
+    console.error('Error adding volunteer opportunity:', error);
+    res.status(500).send('Error adding volunteer opportunity');
   }
 });
 
