@@ -4,17 +4,9 @@ const cors = require('cors');
 const pjson = require('./package.json');
 const firebase = require('firebase/app');
 require('firebase/database');
+const recommendation = require('./recommendation');
+const { db } = require('./firebase');
 
-const admin = require('firebase-admin');
-//add your own serviceaccount path
-const serviceAccount = require('C:\\Users\\sujay\\Downloads\\cosel-e414d-firebase-adminsdk-yj2by-4358d4774d.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://cosel-e414d-default-rtdb.firebaseio.com',
-});
-
-const db = admin.database();
 const ref = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOOqH7s_M/RCHS_SY2122_2223');
 const extracurricularRef = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOOqH7s_M/StudentExtracurricular');
 const volunteerOpportunitiesRef = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOOqH7s_M/VolunteerHours');
@@ -22,6 +14,9 @@ const volunteerOpportunitiesRef = db.ref('1U2CarXeOMX2zCAUFSDnO1ndxuE3tPDYfY3EOO
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Import recommendation functions
+const { getStudentData, generateRecommendations } = require('./recommendation');
 
 // display complete extracurricular data
 app.get('/extracurricular', async (req, res) => {
@@ -66,7 +61,7 @@ app.post('/extracurricular', async (req, res) => {
   }
 });
 
-//  display complete data
+// display complete data
 app.get('/data', async (req, res) => {
   try {
 
@@ -142,15 +137,49 @@ app.post('/volunteeropportunities', async (req, res) => {
   }
 });
 
-app.get('/get/:id', async (req, res) => {
+// Add this function for course recommendations
+app.post('/api/recommendations', async (req, res) => {
   try {
-    const id = req.params.id.toLowerCase();
-    const snapshot = await ref.once('value');
-    const data = snapshot.val();
-    res.json(data[id]);
+    const studentId = req.body.studentId; // Assuming the student ID is provided in the request body
+    const studentData = await getStudentData(studentId);
+
+    if (!studentData) {
+      console.error('Student data not found.');
+      res.status(404).send('Student data not found.');
+      return;
+    }
+
+    // Replace this with your actual recommendation logic based on the student's data
+    const recommendations = await generateRecommendations(studentData);
+
+    console.log('Recommendations:', recommendations);
+    res.json(recommendations);
   } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).send('Error fetching data');
+    console.error('Error generating recommendations:', error);
+    res.status(500).send('Error generating recommendations');
+  }
+});
+
+// Add this endpoint to display recommended courses
+app.get('/api/recommended-courses/:studentId', async (req, res) => {
+  try {
+    const studentId = req.params.studentId; // Get studentId from the URL parameter
+    const studentData = await getStudentData(studentId);
+
+    if (!studentData) {
+      console.error('Student data not found.');
+      res.status(404).send('Student data not found.');
+      return;
+    }
+
+    // Replace this with your actual recommendation logic based on the student's data
+    const recommendations = await generateRecommendations(studentData);
+
+    console.log('Recommendations:', recommendations);
+    res.json(recommendations);
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).send('Error fetching recommendations');
   }
 });
 
