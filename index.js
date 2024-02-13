@@ -137,51 +137,24 @@ app.post('/volunteeropportunities', async (req, res) => {
   }
 });
 
-// Add this function for course recommendations
-app.post('/api/recommendations', async (req, res) => {
-  try {
-    const studentId = req.body.studentId; // Assuming the student ID is provided in the request body
-    const studentData = await getStudentData(studentId);
-
-    if (!studentData) {
-      console.error('Student data not found.');
-      res.status(404).send('Student data not found.');
-      return;
-    }
-
-    // Replace this with your actual recommendation logic based on the student's data
-    const recommendations = await generateRecommendations(studentData);
-
-    console.log('Recommendations:', recommendations);
-    res.json(recommendations);
-  } catch (error) {
-    console.error('Error generating recommendations:', error);
-    res.status(500).send('Error generating recommendations');
-  }
-});
-
 // Add this endpoint to display recommended courses
 app.get('/api/recommended-courses/:studentId', async (req, res) => {
   try {
     const studentId = req.params.studentId; // Get studentId from the URL parameter
-    const studentData = await getStudentData(studentId);
+    const recommendations = await generateRecommendations(studentId);
 
-    if (!studentData) {
-      console.error('Student data not found.');
-      res.status(404).send('Student data not found.');
+    if (recommendations.length === 0) {
+      console.error('No recommendations found for the student.');
+      res.status(404).send('No recommendations found for the student.');
       return;
     }
-
-    // Replace this with your actual recommendation logic based on the student's data
-    const recommendations = await generateRecommendations(studentData);
-
-    console.log('Recommendations:', recommendations);
     res.json(recommendations);
   } catch (error) {
     console.error('Error fetching recommendations:', error);
     res.status(500).send('Error fetching recommendations');
   }
 });
+
 
 // filter
 // search and filter

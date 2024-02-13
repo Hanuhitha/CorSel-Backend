@@ -6,6 +6,7 @@ admin.initializeApp({
   databaseURL: 'https://cosel-e414d-default-rtdb.firebaseio.com',
 });
 
+const firestore = admin.firestore();
 const db = admin.database();
 
-module.exports = { db };
+module.exports = { firestore, db };
