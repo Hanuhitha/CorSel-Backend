@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('C:\\Users\\sujay\\Downloads\\cosel-e414d-firebase-adminsdk-yj2by-4358d4774d.json');
+const serviceAccount = require('/Users/jeremyhuang/CorSel-Backend/cosel-e414d-firebase-adminsdk-yj2by-18158a93e7.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

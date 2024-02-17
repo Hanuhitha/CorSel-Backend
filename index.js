@@ -156,6 +156,26 @@ app.get('/api/recommended-courses/:studentId', async (req, res) => {
 });
 
 
+app.get('/api/autofill-courses/:studentId', async (req, res) => {
+  console.log('hereeee');
+  try {
+    const studentId = req.params.studentId; // Get studentId from the URL parameter
+    res.status(500).send('Error fetching autofill hi');
+    const autofill = await autofillCourses(studentId);
+
+    if (autofill.length === 0) {
+      console.error('Can not autofill for the student.');
+      res.status(404).send('Can not autofill for the student.');
+      return;
+    }
+    res.json(autofill);
+  } catch (error) {
+    console.error('Error fetching autofill:', error);
+    res.status(500).send('Error fetching autofill');
+  }
+});
+
+
 // filter
 // search and filter
 app.get('/filter', async (req, res) => {
